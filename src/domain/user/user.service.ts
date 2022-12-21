@@ -21,7 +21,7 @@ export class UserService {
   private async _checkUserExists(username: string) {
     const res = await this.prisma.user.findUnique({
       where: {
-        username,
+        username: username,
       },
     });
     if (res) return true;

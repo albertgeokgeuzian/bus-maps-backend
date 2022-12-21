@@ -8,4 +8,4 @@ import { PrismaModule } from 'src/database/prisma.module';
   providers: [UserService],
   exports: [UserService],
 })
-export class RouteModule {}
+export class UserModule {}

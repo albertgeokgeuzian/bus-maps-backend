@@ -8,7 +8,7 @@ import {
 import { RouteService } from 'src/domain/routes/routes.service';
 
 @Controller('routes')
-export class AuthController {
+export class RouteController {
   constructor(private routeService: RouteService) {}
 
   @Get('getAll')

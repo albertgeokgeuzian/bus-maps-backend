@@ -13,7 +13,6 @@ datasource db {
 model BusRoutes {
   id           Int            @id @default(autoincrement())
   routeName    String
-  routeNo      String
   waypoints    Waypoint[]
   UserToRoutes UserToRoutes[]
   User         User?          @relation(fields: [userUsername], references: [username])
@@ -24,6 +23,7 @@ model Waypoint {
   id         Int       @id @default(autoincrement())
   latitude   Float
   longitude  Float
+  step       Int
   busRouteId Int
   busRoute   BusRoutes @relation(fields: [busRouteId], references: [id])
 }
