@@ -1,0 +1,50 @@
+name: Deploy back-end
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Load cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Migrate
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} npm run migrate:prod
+
+      - name: Generate schema
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} npm run generate
+
+      - name: Build App
+        run: npm run build
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v13
+        env:
+          VERSION_LABEL: made-in-live-api-${{ github.run_id }}
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          use_existing_version_if_available: true
+          wait_for_environment_recovery: 90
+          application_name: made-in-live-backend
+          environment_name: production
+          version_label: ${{ env.VERSION_LABEL }}
+          region: eu-west-3
+          deployment_package: deploy.zip
