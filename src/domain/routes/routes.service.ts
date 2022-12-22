@@ -21,6 +21,51 @@ export class RouteService {
       };
     });
   }
+
+  async addToFavorites(busRouteId: number, id: number) {
+    const res = await this.prisma.userToRoutes.create({
+      data: {
+        busRoute: {
+          connect: {
+            id: busRouteId,
+          },
+        },
+        user: {
+          connect: {
+            id: id,
+          },
+        },
+      },
+    });
+    return res;
+  }
+
+  async removeFromFavorites(busRouteId: number, id: number) {
+    const res = await this.prisma.userToRoutes.delete({
+      where: {
+        busRouteId_userId: {
+          busRouteId,
+          userId: id,
+        },
+      },
+    });
+    return res;
+  }
+  async getFavoriteRoutes(id: number) {
+    const res = await this.prisma.userToRoutes.findMany({
+      where: {
+        id,
+      },
+      include: {
+        busRoute: {
+          include: {
+            waypoints: true,
+          },
+        },
+      },
+    });
+    return res;
+  }
   async getWaypointsForRouteById(busRouteId: number) {
     const res = await this.prisma.busRoutes.findFirst({
       where: {

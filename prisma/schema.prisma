@@ -29,16 +29,18 @@ model Waypoint {
 }
 
 model UserToRoutes {
-  id           Int       @id @default(autoincrement())
-  user         User      @relation(fields: [userUsername], references: [username])
-  userUsername String
-  busRoute     BusRoutes @relation(fields: [busRouteId], references: [id])
-  busRouteId   Int
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  busRoute   BusRoutes @relation(fields: [busRouteId], references: [id])
+  busRouteId Int
+
+  @@unique([busRouteId, userId], name: "busRouteId_userId")
 }
 
 model User {
-  id           Int
-  username     String         @unique
+  id           Int            @unique
+  username     String         @id @unique
   UserToRoutes UserToRoutes[]
   BusRoutes    BusRoutes[]
 }
