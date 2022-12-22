@@ -22,9 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Migrate
-        run: DATABASE_URL=${{ secrets.DATABASE_URL }} npm run migrate:prod
-
       - name: Generate schema
         run: DATABASE_URL=${{ secrets.DATABASE_URL }} npm run generate
 
